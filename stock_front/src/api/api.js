@@ -1,68 +1,7 @@
-// import axios from "axios";
-
-// const API_BASE_URL = "http://localhost:8080/api"; 
-
-// export const registerUser = async (userData) => {
-//   try {
-//     const response = await axios.post(`${API_BASE_URL}/users/register`, userData, {
-//       headers: { "Content-Type": "application/json" },
-//     });
-//     return response.data;
-//   } catch (error) {
-//     console.error("Registration error:", error.response?.data || error.message);
-//     throw error;
-//   }
-// };
-
-// export const loginUser = async (loginData) => {
-//   try {
-//     const response = await axios.post(`${API_BASE_URL}/users/login`, loginData, {
-//       headers: { "Content-Type": "application/json" },
-//     });
-//     return response.data;
-//   } catch (error) {
-//     console.error("Login error:", error.response?.data || error.message);
-//     throw error;
-//   }
-// };
-
-// export const fetchStocks = async () => {
-//   try {
-//     const response = await axios.get(`${API_BASE_URL}/stocks`);
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error fetching stocks:", error.response?.data || error.message);
-//     throw error;
-//   }
-// };
-
-// export const addStock = async (stockData) => {
-//   try {
-//     const response = await axios.post(`${API_BASE_URL}/stocks`, stockData, {
-//       headers: { "Content-Type": "application/json" },
-//     });
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error adding stock:", error.response?.data || error.message);
-//     throw error;
-//   }
-// };
-
-// export const fetchCompanies = async () => {
-//   try {
-//     const response = await axios.get(`${API_BASE_URL}/companies`);
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error fetching companies:", error.response?.data || error.message);
-//     throw error;
-//   }
-// };
-
 import axios from "axios";
 
 const API_BASE_URL = "http://localhost:8080/api";
 
-// User Authentication
 export const registerUser = async (userData) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/users/register`, userData, {
@@ -81,7 +20,6 @@ export const registerUser = async (userData) => {
 
 export const loginUser = async (loginData) => {
   try {
-    // Determine if the input is email or username
     const isEmail = loginData.emailOrUsername.includes('@');
     const payload = isEmail
       ? { email: loginData.emailOrUsername, password: loginData.password }
@@ -91,7 +29,6 @@ export const loginUser = async (loginData) => {
       headers: { "Content-Type": "application/json" },
     });
     
-    // Store user data in localStorage if login is successful
     if (response.data && response.data.username) {
       localStorage.setItem('user', JSON.stringify(response.data));
     }
@@ -116,7 +53,6 @@ export const getCurrentUser = () => {
   return user ? JSON.parse(user) : null;
 };
 
-// Stocks API
 export const fetchStocks = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/stocks`);
@@ -139,7 +75,6 @@ export const addStock = async (stockData) => {
   }
 };
 
-// Companies API
 export const fetchCompanies = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/companies`);
@@ -150,7 +85,6 @@ export const fetchCompanies = async () => {
   }
 };
 
-// Portfolio API (example - add your actual endpoints)
 export const fetchUserPortfolio = async (userId) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/portfolio/${userId}`);
