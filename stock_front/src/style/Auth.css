@@ -1,0 +1,71 @@
+/* src/style/Auth.css */
+.auth-page {
+    background-color: var(--background);
+    min-height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    padding: 2rem;
+  }
+  
+  .auth-card {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .logo-container {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .app-name {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--primary);
+  }
+  
+  .auth-card h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .btn-block {
+    width: 100%;
+    padding: 12px;
+  }
+  
+  .error-text {
+    color: var(--error);
+    text-align: center;
+    margin: 1rem 0;
+  }
+  
+  .auth-link {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+  
+  .auth-link a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .auth-link a:hover {
+    text-decoration: underline;
+  }
