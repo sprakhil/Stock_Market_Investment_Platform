@@ -24,10 +24,15 @@ export const addStock = async (stockData) => {
 
 export const deleteStock = async (id) => {
   try {
-    await axios.delete(`${API_URL}/${id}`);
+    const response = await axios.delete(`${API_URL}/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    return response.data; 
   } catch (error) {
     console.error('Error deleting stock:', error);
-    throw new Error('Failed to delete stock. Please try again.');
+    throw new Error(error.response?.data?.message || 'Failed to delete stock. Please try again.');
   }
 };
 

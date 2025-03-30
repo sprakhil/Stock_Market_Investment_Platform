@@ -61,6 +61,9 @@ public class StockService {
     }
 
     public void deleteStock(String id) {
+        if (!stockRepository.existsById(id)) {
+            throw new RuntimeException("Stock not found with id: " + id);
+        }
         stockRepository.deleteById(id);
     }
 }

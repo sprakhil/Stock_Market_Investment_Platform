@@ -41,8 +41,12 @@ public class StockController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStock(@PathVariable String id) {
-        stockService.deleteStock(id);
-        return ResponseEntity.noContent().build();
+        try {
+            stockService.deleteStock(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/refresh")

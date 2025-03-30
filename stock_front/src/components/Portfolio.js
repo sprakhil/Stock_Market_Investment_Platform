@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchStocks, addStock, refreshStockPrices } from "../api/stockApi";
 import { toast } from "react-toastify";
+import {deleteStock} from "../api/stockApi";
 import Navbar from "./Navbar";
 import "../style/Theme.css";
 import "../style/Portfolio.css";
@@ -65,6 +66,41 @@ const Portfolio = () => {
       toast.error(error.message);
     }
   };
+  
+  const getStockId = (stock) => {
+    if (!stock) return null;
+    
+    // Case 1: Modern MongoDB (_id as string)
+    if (typeof stock._id === 'string') return stock._id;
+    
+    // Case 2: Legacy MongoDB (_id as object with $oid)
+    if (stock._id?.$oid) return stock._id.$oid;
+    
+    // Case 3: Direct ID field
+    if (stock.id) return stock.id;
+    
+    return null;
+  };
+
+  const handleSell = async (stock) => {
+    const stockId = getStockId(stock);
+    if (!stockId) {
+      console.error('Invalid stock object:', stock);
+      toast.error('This stock cannot be sold - missing identification');
+      return;
+    }
+  
+    try {
+      const confirmSell = window.confirm(`Sell all ${stock.stockSymbol}?`);
+      if (!confirmSell) return;
+  
+      await deleteStock(stockId);
+      setStocks(prev => prev.filter(s => getStockId(s) !== stockId));
+      toast.success(`${stock.stockSymbol} sold successfully`);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to sell stock');
+    }
+  };
 
   return (
     <div className="portfolio-page">
@@ -119,6 +155,7 @@ const Portfolio = () => {
                   <th>Invested</th>
                   <th>Current Value</th>
                   <th>Gain/Loss</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -138,6 +175,15 @@ const Portfolio = () => {
                       <td>${currentValue.toFixed(2)}</td>
                       <td style={{ color: gainLoss >= 0 ? 'var(--success)' : 'var(--error)' }}>
                         ${gainLoss.toFixed(2)} ({gainLossPercent.toFixed(2)}%)
+                      </td>
+                      <td>
+                      <button 
+                        className="btn btn-error sell-btn"
+                        onClick={() => handleSell(stock)}
+                        disabled={!getStockId(stock)}
+                      >
+                        Sell
+                      </button>
                       </td>
                     </tr>
                   );
