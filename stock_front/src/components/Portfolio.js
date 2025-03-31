@@ -18,6 +18,11 @@ const Portfolio = () => {
     quantity: "",
     purchasePrice: "",
   });
+  const [sellConfirmation, setSellConfirmation] = useState({
+    show: false,
+    stock: null,
+    stockId: null
+  });
 
   useEffect(() => {
     const loadStocks = async () => {
@@ -69,14 +74,11 @@ const Portfolio = () => {
   
   const getStockId = (stock) => {
     if (!stock) return null;
-    
-    // Case 1: Modern MongoDB (_id as string)
+  
     if (typeof stock._id === 'string') return stock._id;
-    
-    // Case 2: Legacy MongoDB (_id as object with $oid)
+  
     if (stock._id?.$oid) return stock._id.$oid;
     
-    // Case 3: Direct ID field
     if (stock.id) return stock.id;
     
     return null;
@@ -89,19 +91,30 @@ const Portfolio = () => {
       toast.error('This stock cannot be sold - missing identification');
       return;
     }
+
+    setSellConfirmation({
+      show: true,
+      stock,
+      stockId
+      });
+    };
+  
+    const confirmSell = async () => {
+    const { stockId, stock } = sellConfirmation;
   
     try {
-      const confirmSell = window.confirm(`Sell all ${stock.stockSymbol}?`);
-      if (!confirmSell) return;
-  
       await deleteStock(stockId);
       setStocks(prev => prev.filter(s => getStockId(s) !== stockId));
       toast.success(`${stock.stockSymbol} sold successfully`);
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to sell stock');
+    }finally{
+      setSellConfirmation({show:false,stock:null,stockId:null});
     }
   };
-
+  const cancelSell = () => {
+    setSellConfirmation({ show: false, stock: null, stockId: null });
+  };
   return (
     <div className="portfolio-page">
       <Navbar />
@@ -239,6 +252,29 @@ const Portfolio = () => {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+        {sellConfirmation.show && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h3>Confirm Sale</h3>
+              <p>Are you sure you want to sell all shares of {sellConfirmation.stock?.stockSymbol}?</p>
+              
+              <div className="modal-actions">
+                <button 
+                  className="btn btn-error" 
+                  onClick={cancelSell}
+                >
+                  Cancel
+                </button>
+                <button 
+                  className="btn btn-primary" 
+                  onClick={confirmSell}
+                >
+                  Confirm Sale
+                </button>
+              </div>
             </div>
           </div>
         )}
