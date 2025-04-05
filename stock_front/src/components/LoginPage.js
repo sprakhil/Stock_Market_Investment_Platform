@@ -12,16 +12,50 @@ const LoginPage = () => {
         emailOrUsername: '',
         password: ''
     });
+    const [errors, setErrors] = useState({
+        emailOrUsername: '',
+        password: ''
+    });
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
+    const validateForm = () => {
+        let isValid = true;
+        const newErrors = {
+            emailOrUsername: '',
+            password: ''
+        };
+
+        if (!formData.emailOrUsername.trim()) {
+            newErrors.emailOrUsername = 'Email or username is required';
+            isValid = false;
+        }
+
+        if (!formData.password) {
+            newErrors.password = 'Password is required';
+            isValid = false;
+        }
+
+        setErrors(newErrors);
+        return isValid;
+    };
+
     const handleChange = (e) => {
-        setFormData({...formData, [e.target.name]: e.target.value});
+        const { name, value } = e.target;
+        setFormData({...formData, [name]: value});
+
+        if (errors[name]) {
+            setErrors({...errors, [name]: ''});
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+
+        if (!validateForm()) {
+            return;
+        }
 
         try {
             const loginData = {
@@ -54,23 +88,23 @@ const LoginPage = () => {
                             <input 
                                 type="text" 
                                 name="emailOrUsername" 
-                                className="form-control"
-                                placeholder="Email or Username" 
+                                className={`form-control ${errors.emailOrUsername ? 'is-invalid' : ''}`}
+                                placeholder="Email or username" 
                                 value={formData.emailOrUsername} 
                                 onChange={handleChange} 
-                                required 
                             />
+                            {errors.emailOrUsername && <div className="invalid-feedback">{errors.emailOrUsername}</div>}
                         </div>
                         <div className="form-group">
                             <input 
                                 type="password" 
                                 name="password" 
-                                className="form-control"
+                                className={`form-control ${errors.password ? 'is-invalid' : ''}`}
                                 placeholder="Password" 
                                 value={formData.password} 
                                 onChange={handleChange} 
-                                required 
                             />
+                            {errors.password && <div className="invalid-feedback">{errors.password}</div>}
                         </div>
                         <button type="submit" className="btn btn-primary btn-block">Login</button>
                     </form>
